@@ -1,21 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { ContactsContext } from './Context';
+import { useContext } from 'react';
 
 function NewContact() {
-    const [contact, setContact] = useState({});
-
-    const handleAddContact = async () => {
-        const addToAPI = await fetch('https://playground.4geeks.com/contact/agendas/ines/contacts', {
-                                    method: 'POST', 
-                                    headers: {"Content-type": "application/json"},
-                                    body: JSON.stringify({"name": contact.name, 
-                                                        "phone": contact.phone, 
-                                                        "email": contact.email,
-                                                        "address": contact.address})
-                                    });
-        fetchData();
-
-    };
+    const {handleAddContact, contact, setContact} = useContext(ContactsContext);
 
 
     return (

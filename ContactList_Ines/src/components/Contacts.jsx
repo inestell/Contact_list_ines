@@ -1,37 +1,54 @@
-import { useState, useEffect, useContext} from 'react'
+import { useEffect, useContext, useState } from 'react'
 import { Link } from "react-router-dom"
+import { ContactsContext } from './Context';
+import { Modal } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 
-
-function Contacts(){
-    const [list, setList] = useState([])
+function MyModal ({index}) {
+    const [show, setShow] = useState(false);
+    const {handleDeleteContact, fetchData} = useContext(ContactsContext);
     
-    const fetchData = async () => {
-        const response = await fetch("https://playground.4geeks.com/contact/agendas/ines");
-        const apiList = await response.json();
-        console.log(apiList.contacts);
-        setList(apiList.contacts);
+    const handleClose = () => setShow(false);
+    
+    const confirmDelete = (index) => {
+        handleDeleteContact(index);
+        fetchData();
+        setShow(false);
     }
+
+    return (
+        <>
+            <Button style={{color: "black", backgroundColor: "white", border: "none"}} 
+                    onClick={() => setShow(true)}>
+                <i className="fa fa-trash m-3" 
+                    style={{fontSize: "25px"}}></i>
+            </Button>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Are you sure?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Do you really want to delete this contact?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                    <Button variant="danger" onClick={() => confirmDelete(index)}>Delete</Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+}
+
+function Contacts() {
+    
+    const {list, fetchData, handleEditContact} = useContext(ContactsContext);
 
     useEffect(() => {
         fetchData();
     }, []);
 
-    const handleEditContact = async (index) => {
-        const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/ines/contacts/${contact[index].id}`, {
-                                    method: 'PUT', 
-                                    headers: {"Content-type": "application/json"},
-                                    body: JSON.stringify({"name": contact.name, 
-                                                        "phone": contact.phone, 
-                                                        "email": contact.email,
-                                                        "address": contact.address})
-                                    });
-        fetchData();
 
-    };
 
-    
     return(
-        <div className="container">
+        <div className="container pb-5">
             <div className="d-flex justify-content-end">
                 <button className="btn btn-success my-3 text-decoration-none">
                     <Link style={{color: "white", textDecoration: "none"}}
@@ -40,25 +57,34 @@ function Contacts(){
                     </Link>
                 </button>
             </div>
-            {list.map( (person, index) => {
-            <div className="card d-flex flex-row p-3">
+            { list.map((person, index) => (
+            <div className="card d-flex flex-row p-3" key={person.id}>
                 <div className="col-3 m-3">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GyJTZ8RzjIXKgUx9dwuJY9rYidk7zeoQeQ&s" width="150px" height="150px" className="object-fit-cover rounded-circle"></img>
                 </div>
                 <div className="col-6">
                     <div className="card-body">
-                        <h3>{person.name}</h3>
-                        <p>{person.address}</p>
-                        <p>{person.phone}</p>
-                        <p>{person.email}</p>
+                        <h3 className="mb-3">{person.name}</h3>
+                        <h5>
+                            <span><i className="fa fa-location-arrow me-2"></i></span>
+                            {person.address}
+                        </h5>
+                        <h6>
+                            <span><i className="fa fa-phone me-2"></i></span>
+                            {person.phone}
+                        </h6>
+                        <p>
+                            <span><i className="fa fa-envelope me-2"></i></span>
+                            {person.email}
+                        </p>
                     </div>
                 </div>
                 <div className="col-3 text-center align-items-center">
-                    <span onClick={handleEditContact}><i className="fa fa-pencil m-3" style={{fontSize: "25px"}}></i></span>
-                    <span><i className="fa fa-trash m-3" style={{fontSize: "25px"}}></i></span>
+                    <span onClick={() => handleEditContact(index)}><i className="fa fa-pencil m-3" style={{fontSize: "25px"}}></i></span>
+                    <MyModal index={index}/>
                 </div>
             </div>
-            }
+            )
             )}
         </div>
     )
