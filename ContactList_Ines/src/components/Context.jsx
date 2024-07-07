@@ -6,17 +6,15 @@ export const ContactsContext = createContext();
 export const ContextWrapper = ({children}) => {
     const [list, setList] = useState([]);
     const [contact, setContact] = useState({name: "", phone: "", email: "", address: ""});
-
-
+    
     const fetchData = async () => {
         const response = await fetch("https://playground.4geeks.com/contact/agendas/ines/contacts");
         const apiList = await response.json();
-        console.log(apiList.contacts);
         setList(apiList.contacts);
     };
     
     const handleAddContact = async () => {
-        const addContact = await fetch('https://playground.4geeks.com/contact/agendas/ines/contacts', {
+        const response = await fetch('https://playground.4geeks.com/contact/agendas/ines/contacts', {
                                     method: 'POST', 
                                     headers: {"Content-type": "application/json"},
                                     body: JSON.stringify({"name": contact.name, 
@@ -24,13 +22,14 @@ export const ContextWrapper = ({children}) => {
                                                         "email": contact.email,
                                                         "address": contact.address})
                                     });
+        await response.json();
         fetchData();
 
     };
     
 
-    const handleEditContact = async (index) => {
-        const editContact = await fetch(`https://playground.4geeks.com/contact/agendas/ines/contacts/${list[index].id}`, {
+    const handleEditContact = async (id) => {
+        const response = await fetch(`https://playground.4geeks.com/contact/agendas/ines/contacts/${id}`, {
                                     method: 'PUT', 
                                     headers: {"Content-type": "application/json"},
                                     body: JSON.stringify({"name": contact.name, 
@@ -38,19 +37,21 @@ export const ContextWrapper = ({children}) => {
                                                         "email": contact.email,
                                                         "address": contact.address})
                                     });
+        await response.json();
         fetchData();
+        setContact({name: "", phone: "", email: "", address: ""});
 
     };
 
     const handleDeleteContact = async (index) => {
-        const deleteContact = await fetch(`https://playground.4geeks.com/contact/agendas/ines/contacts/${list[index].id}`, {
+        await fetch(`https://playground.4geeks.com/contact/agendas/ines/contacts/${list[index].id}`, {
             method: "DELETE"
         });
         fetchData();
     };
 
     return (
-        <ContactsContext.Provider value={{list, setList, contact, setContact, fetchData, handleAddContact, handleEditContact, handleDeleteContact}}>
+        <ContactsContext.Provider value={{list, setList, contact, setContact, fetchData, handleAddContact, handleEditContact, handleDeleteContact }}>
             {children}
         </ContactsContext.Provider>
     )

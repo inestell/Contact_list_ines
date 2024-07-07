@@ -25,7 +25,7 @@ function MyModal ({index}) {
             </Button>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Are you sure?</Modal.Title>
+                    <Modal.Title>Are you sure...</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>Do you really want to delete this contact?</Modal.Body>
                 <Modal.Footer>
@@ -39,7 +39,7 @@ function MyModal ({index}) {
 
 function Contacts() {
     
-    const {list, fetchData, handleEditContact} = useContext(ContactsContext);
+    const {list, fetchData } = useContext(ContactsContext);
 
     useEffect(() => {
         fetchData();
@@ -58,7 +58,7 @@ function Contacts() {
                 </button>
             </div>
             { list.map((person, index) => (
-            <div className="card d-flex flex-row p-3" key={person.id}>
+            <div className="card d-flex flex-row p-3 border-1" key={person.id}>
                 <div className="col-3 m-3">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GyJTZ8RzjIXKgUx9dwuJY9rYidk7zeoQeQ&s" width="150px" height="150px" className="object-fit-cover rounded-circle"></img>
                 </div>
@@ -80,7 +80,10 @@ function Contacts() {
                     </div>
                 </div>
                 <div className="col-3 text-center align-items-center">
-                    <span onClick={() => handleEditContact(index)}><i className="fa fa-pencil m-3" style={{fontSize: "25px"}}></i></span>
+                    
+                    <Link className="text-decoration-none" to={`/update/${person.id}`}>
+                        <i className="fa fa-pencil m-3" style={{fontSize: "25px", color: "black"}}></i>
+                    </Link>
                     <MyModal index={index}/>
                 </div>
             </div>
