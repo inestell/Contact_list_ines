@@ -24,6 +24,7 @@ export const ContextWrapper = ({children}) => {
                                     });
         await response.json();
         fetchData();
+        setContact({name: "", phone: "", email: "", address: ""})
 
     };
     

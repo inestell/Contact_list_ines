@@ -37,7 +37,7 @@ function Update() {
     return (
         <div className="p-4">
             <h2 className="text-center m-4">Add a new contact</h2>
-            <form className="col-6 p-3 m-auto">
+            <div className="col-6 p-3 m-auto">
                 <div>
                     <label className="form-label">Full Name</label>
                     <input type="text" 
@@ -83,7 +83,7 @@ function Update() {
                             type="button">Update</button>
                     <Link to="/">or get back to contacts</Link>
                 </div>
-            </form>
+            </div>
 
         </div>
     )
